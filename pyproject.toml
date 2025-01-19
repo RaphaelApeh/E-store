@@ -1,0 +1,14 @@
+[project]
+name = "e-store"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "dj-database-url>=2.3.0",
+    "django>=5.1.5",
+    "django-taggit>=6.1.0",
+    "pillow>=11.1.0",
+    "psycopg2-binary>=2.9.10",
+    "python-decouple>=3.8",
+]
