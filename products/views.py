@@ -1,5 +1,5 @@
 from django.core.paginator import Paginator
-from django.views.generic import View, DetailView
+from django.views.generic import View, DetailView, TemplateView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import render, get_object_or_404
 
@@ -45,3 +45,10 @@ class ProductDetailView(LoginRequiredMixin, DetailView):
     
 
 product_detail_view = ProductDetailView.as_view()
+
+
+class HomePageView(TemplateView):
+    template_name = "index.html"
+
+
+home_page_view = HomePageView.as_view()
