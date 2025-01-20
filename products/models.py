@@ -2,6 +2,7 @@
 
 from django.db import models
 from django.conf import settings
+from django.urls import reverse
 from django.utils.text import slugify
 from django.contrib.auth import get_user_model
 
@@ -25,7 +26,7 @@ class Product(models.Model):
     product_image = models.ImageField()
     stripe_product_id = models.CharField(max_length=60, null=True, blank=True)
     stripe_price_id = models.CharField(max_length=60, null=True, blank=True)
-    slug = models.SlugField()
+    slug = models.SlugField(max_length=52, blank=True, null=True)
     tags = TaggableManager()
     price = models.FloatField(default=93.3)
     in_stock = models.BooleanField(default=True)
@@ -38,3 +39,7 @@ class Product(models.Model):
         if self.product_name:
             self.slug = slugify(self.product_name)
         super().save(*args, **kwargs)
+
+    def get_absolute_url(self):
+
+        return reverse('products:product-detail', kwargs={'slug': self.slug})

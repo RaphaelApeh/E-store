@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+{% block title %} {{object.product_name}} {% endblock %}
+{% block content %}
+
+    <!------------------------------ Single product details------------------------------>
+    <div class="small-container single-product">
+        
+        
+        <!--<h2 class="title" >Featured Products</h2>-->
+        <div class="row">
+                <div class="col-2">
+                    <img src="{{ object.product_image.url }}" width="100%" id="productImg">
+                    
+                    
+                    <div class="small-img-row">
+                        <div class="small-img-col">
+                            <img src="{{ object.product_image.url }}" width="100%" class="small-img">
+                        </div>
+                    </div>
+                </div>
+            
+                <div class="col-2">
+                    <p>{{ object.tags.names|join:"" }}</p>
+                    <h1>{{ object.product_name|title }}</h1>
+                    <h4>${{ object.price }}</h4>
+                    <select>
+                        <option>Select Size</option>
+                        <option>6<!--Small (s)--></option>
+                        <option>7<!--Medium (M)--></option>
+                        <option>8<!--Large (L)--></option>
+                        <option>9<!--XL--></option>
+                        <option>10<!--XXL--></option>
+                    </select>
+                    <input type="number" values="1">
+                    <a href="cart.html" class="btn">Add to Cart</a>
+                    <h3>Product Details <i class="fa fa-indent" ></i></h3>
+                    <br>
+                    <p>{{ object.product_description }}</p>
+                </div>
+            </div>
+        </div>
+    
+    
+    <!----------------------------------Title------------------------------------->
+    <div class="small-container">
+        <div class="row row-2">
+            <h2>Related Products</h2>
+            <a href="/products/"><p>View More</p></a>
+        </div>
+    </div>
+            
+    <!----------------------------------products------------------------------------->
+    <div class="small-container">
+            <div class="row">
+                {% for product in related_products %}
+                    <div class="col-4">
+                    <a href="{{ product.get_absolute_url }}"><img src="{{ product.product_image.url }}"></a>
+                    <a href="{{ product.get_absolute_url }}"><h4>{{ product.product_name|title }}</h4></a>
+                    <div class="rating">
+                        
+                        <i class="fa fa-star" ></i>
+                        <i class="fa fa-star" ></i>
+                        <i class="fa fa-star" ></i>
+                        <i class="fa fa-star-half-o" ></i>
+                        <i class="fa fa-star-o" ></i>
+                    </div>
+                    <p>$50.00</p>
+                </div> 
+                {% endfor %}
+            </div>
+    </div>
+{% endblock %}
