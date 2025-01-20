@@ -1,5 +1,6 @@
 from django.core.paginator import Paginator
 from django.views.generic import View, DetailView
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import render, get_object_or_404
 
 from .models import Product, Cart
@@ -22,7 +23,7 @@ class ProductView(View):
 product_list_view = ProductView.as_view()
 
 
-class ProductDetailView(DetailView):
+class ProductDetailView(LoginRequiredMixin, DetailView):
     template_name = "products/products-details.html"
     model = Product
     queryset = Product.objects.filter(in_stock=True)

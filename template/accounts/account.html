@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+
+{% block content %}
+<!------------------------------ account-page details------------------------------>
+
+        <div class="account-page">
+            <div class="container">
+                <div class="row">
+                    <!-- <div class="col-2">
+                        <img src="images/image1.png" width="100%">
+                    </div> -->
+                    <div class="col-2">
+                        <div class="form-container">
+                            <div class="form-btn">
+                                <span onclick="login()">Login</span>
+                                <span onclick="register()">Register</span>
+                                <hr id="Indicator">
+                            </div>
+                            <form id="LoginForm" method="post">
+                                {% csrf_token %}
+                                <input type="text" placeholder="username">
+                                <input type="password" placeholder="password">
+                                <button type="submit" class="btn">Login</button>
+                                <a href="">Forgot password</a>
+                            </form>
+                            
+                            <form id="RegForm" method="post">
+                                {{ register_form.non_field_errors|join:", " }}
+                                {% csrf_token %}
+                                {% for field in register_form %}
+                                    {% if field.name in password_fields %}
+                                        <small>{{ field.label }}</small>
+                                        {{ field }}
+                                    {% else %}
+                                    {{ field }}
+                                    {% endif %}
+                                {% endfor %}
+                                <button type="submit" class="btn">Register</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                    
+            </div>
+        </div>
+                <!-----------------------------------js for toggle form-------------------------------------->
+        <script>
+            var LoginForm=document.getElementById("LoginForm");
+            var RegForm=document.getElementById("RegForm");
+            var Indicator=document.getElementById("Indicator");
+            
+            function register(){
+                RegForm.style.transform="translateX(0px)";
+                LoginForm.style.transform="translateX(0px)";
+                Indicator.style.transform="translateX(100px)"
+            }
+            function login(){
+                RegForm.style.transform="translateX(300px)";
+                LoginForm.style.transform="translateX(300px)";
+                Indicator.style.transform="translateX(0px)";
+            }
+        </script>
+{% endblock %}
