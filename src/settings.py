@@ -45,7 +45,8 @@ INSTALLED_APPS = [
 
     # Internals
     "products",
-    "accounts"
+    "accounts",
+    #"checkouts",
 
 ]
 
@@ -135,3 +136,6 @@ STATICFILES_DIRS = [
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+# Stripe
+STRIPE_SECRET_KEY = config("STRIPE_SECRET_KEY", default="", cast=str) 
