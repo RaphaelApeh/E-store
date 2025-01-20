@@ -36,7 +36,7 @@ class ProductDetailView(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['related_products'] = Product.objects.exclude(id=self.get_object().id).defer("tags")
+        context['related_products'] = self.get_queryset().filter(tags__name__in=self.get_object().tags.names()).distinct().exclude(id=self.get_object().id)[:3]
         return context
     
     def get_queryset(self):
