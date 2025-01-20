@@ -12,18 +12,23 @@
                     <div class="col-2">
                         <div class="form-container">
                             <div class="form-btn">
-                                <span onclick="login()">Login</span>
-                                <span onclick="register()">Register</span>
-                                <hr id="Indicator">
+                                {% if "accounts/login/" in request.path %}
+                                <span>Login</span>
+                                {% endif %}
+                                {% if "accounts/register/" in request.path %}
+                                <span>Register</span>
+                                {% endif %}
                             </div>
-                            <form id="LoginForm" method="post">
+                            {% if "accounts/login/" in request.path %}
+                            <form id="LoginForm" style="transform: translateX(300px);" method="post">
                                 {% csrf_token %}
                                 <input type="text" placeholder="username">
                                 <input type="password" placeholder="password">
                                 <button type="submit" class="btn">Login</button>
                                 <a href="">Forgot password</a>
                             </form>
-                            
+                            {% endif %}
+                            {% if "accounts/register/" in request.path %}
                             <form id="RegForm" method="post">
                                 {{ register_form.non_field_errors|join:", " }}
                                 {% csrf_token %}
@@ -37,6 +42,7 @@
                                 {% endfor %}
                                 <button type="submit" class="btn">Register</button>
                             </form>
+                            {% endif %}
                         </div>
                     </div>
                 </div>

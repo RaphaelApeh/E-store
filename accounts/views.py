@@ -6,7 +6,7 @@ from django.shortcuts import render, redirect
 from .forms import RegisterForm, LoginForm
 
 
-class AuthenticationView(View):
+class RegisterView(View):
 
     def dispatch(self, request, *args, **kwargs):
         if self.request.user.is_authenticated:
@@ -15,11 +15,9 @@ class AuthenticationView(View):
 
     def get(self, request, *args, **kwargs):
         register_form = RegisterForm()
-        login_form = LoginForm()
         password_fields = ['password1', 'password2']
         context = {
             "register_form": register_form,
-            "login_form":login_form,
             "password_fields": password_fields
         }
         return render(request, "accounts/account.html", context)
@@ -36,11 +34,19 @@ class AuthenticationView(View):
                 messages.success(request, "User saved.")
                 return redirect("products:products-list")
             messages.error(request, "Error occured")
-            return redirect("accounts:auth")
+            return redirect("accounts:register")
     
 
-account_view = AuthenticationView.as_view()
+register_view = RegisterView.as_view()
 
+
+class LoginView(View):
+
+    def get(self, request, *args, **kwargs):
+
+        return render(request, "accounts/account.html")
+    
+login_view = LoginView.as_view()
 
 class LogoutView(View):
 
