@@ -73,6 +73,8 @@ TEMPLATES = [
                 "django.template.context_processors.request",
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
+
+                "products.context_processors.show_year",
             ],
         },
     },
@@ -139,6 +141,9 @@ MEDIA_ROOT = BASE_DIR / "media"
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+# Taggit
+TAGGIT_CASE_INSENSITIVE = True
 
 # Stripe
 STRIPE_SECRET_KEY = config("STRIPE_SECRET_KEY", default="", cast=str) 

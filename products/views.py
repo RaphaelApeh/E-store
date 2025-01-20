@@ -1,5 +1,4 @@
-import datetime
-
+from django.core.paginator import Paginator
 from django.views.generic import View, DetailView
 from django.shortcuts import render, get_object_or_404
 
@@ -10,11 +9,13 @@ class ProductView(View):
 
     def get(self, request, *args, **kwargs):
 
-        products = Product.objects.filter(in_stock=True).order_by("-timestamp")
+        qs = Product.objects.filter(in_stock=True).order_by("-timestamp")
+        paginator = Paginator(qs, 6)
+        pages = int(self.request.GET.get("pages", 1))
+        products = paginator.get_page(pages)
 
         context = {
-            "products": products,
-            'year': datetime.datetime.now().year
+            "products": products
         }
         return render(request, "products/products.html", context)
     
