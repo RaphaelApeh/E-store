@@ -39,7 +39,7 @@ class ProductDetailView(DetailView):
         return context
     
     def get_queryset(self):
-        return self.model.objects.prefetch_related("tags").all()
+        return self.model.objects.prefetch_related("tags").filter(in_stock=True)
     
 
 product_detail_view = ProductDetailView.as_view()
