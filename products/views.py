@@ -1,7 +1,7 @@
 import datetime
 
 from django.views.generic import View, DetailView
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 
 from .models import Product, Cart
 
@@ -27,10 +27,19 @@ class ProductDetailView(DetailView):
     queryset = Product.objects.filter(in_stock=True)
     query_pk_and_slug = "slug"
 
+    def get_object(self, queryset = ...):
+
+        queryset = queryset if queryset is None else self.get_queryset()
+
+        return get_object_or_404(queryset, slug=self.kwargs.get("slug"))
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['related_products'] = Product.objects.exclude(id=self.get_object().id)
+        context['related_products'] = Product.objects.exclude(id=self.get_object().id).defer("tags")
         return context
+    
+    def get_queryset(self):
+        return self.model.objects.prefetch_related("tags").all()
     
 
 product_detail_view = ProductDetailView.as_view()
