@@ -47,12 +47,9 @@ class Product(models.Model):
     
 
 def sync_user_cart_price(instance, action, **kwargs):
-    
-    if action == 'post_add':
-        prices = [obj.price for obj in instance.products.all()]
-        sumed_prices = sum(list(set(prices)))
-        instance.total_price = sumed_prices # [93.3, 100.1, 232.23]
-        instance.save()
-
+    prices = [obj.price for obj in instance.products.all()]
+    sumed_prices = sum(list(set(prices))) 
+    instance.total_price = sumed_prices
+    instance.save()
 
 m2m_changed.connect(sync_user_cart_price, sender=Cart.products.through)
