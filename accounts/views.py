@@ -45,7 +45,17 @@ class LoginView(View):
     def get(self, request, *args, **kwargs):
 
         return render(request, "accounts/account.html")
-    
+
+    def post(self, request, *args, **kwargs):
+        form = LoginForm(self.request.POST)
+        if form.is_valid():
+            username = form.cleaned_data["username"]
+            password = form.cleaned_data["password"]
+            user = authenticate(request, username, password)
+            if user is not None:
+                login(request, user)
+                return redirect("products:products-list")
+
 login_view = LoginView.as_view()
 
 class LogoutView(View):
@@ -59,6 +69,6 @@ class LogoutView(View):
         
         logout(request)
         messages.success(request, "user logged out successfully.")
-        return redirect("accounts:auth")
+        return redirect("accounts:register")
     
 logout_view = LogoutView.as_view()

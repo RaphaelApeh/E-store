@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+
+{% block title %}{{ request.user|title }} {% endblock %}
+
+{% block content %}
+<!------------------------------ cart items details------------------------------>
+
+        <div class="small-container cart-page">
+        <table>
+            <tr>
+                <th>Product</th>
+                <th>Quantity</th>
+                <th>Subtotal</th>
+            </tr>
+            {% for object in request.user.cart.products.all %}
+            <tr>
+                <td>
+                    <div class="cart-info">
+                        <img src="{{ object.product_image.url }}">
+                        <div>
+                            <p>{{ object.product_name }}</p>
+                            <small>Price: ${{ object.price }}</small><br>
+                            <a href="">Remove</a>
+                        </div>
+                    </div>
+                </td>
+                <td><input type="number" vlaue="1"></td>
+                <td>${{ object.price }}</td>
+            </tr>
+            {% endfor %}
+            </table>
+            
+            <div class="total-price">
+                <table>
+                    <tr>
+                        <td>Subtotal</td>
+                        <td>${{ sub_total }}</td>
+                    </tr>
+                    <tr>
+                        <td>Tax</td>
+                        <td>${{ tax }}</td>
+                    </tr>
+                    <tr>
+                        <td>Total</td>
+                        <td>${{ request.user.cart.total_price }}</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+{% endblock %}

@@ -145,7 +145,7 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 # Taggit
 TAGGIT_CASE_INSENSITIVE = True
 
-LOGIN_URL = "/accounts/"
+LOGIN_URL = "/accounts/login/"
 LOGIN_REDIRECT_URL = "/products/"
 
 # Stripe
