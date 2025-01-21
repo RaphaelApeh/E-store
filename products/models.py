@@ -47,8 +47,8 @@ class Product(models.Model):
     
 
 def sync_user_cart_price(instance, action, **kwargs):
-    prices = [obj.price for obj in instance.products.all()]
-    sumed_prices = sum(list(set(prices))) 
+    prices = [obj.price for obj in instance.products.all().distinct()]
+    sumed_prices = sum(list(prices)) 
     instance.total_price = sumed_prices
     instance.save()
 
