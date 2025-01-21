@@ -1,6 +1,7 @@
 # import stripe
 
 from django.db import models
+from django.db.models.signals import m2m_changed
 from django.conf import settings
 from django.urls import reverse
 from django.utils.text import slugify
@@ -14,7 +15,7 @@ class Cart(models.Model):
 
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     products = models.ManyToManyField("Product", blank=True)
-    total_price = models.FloatField(default=99.89)
+    total_price = models.FloatField(default=10.1, null=True, blank=True)
 
     def __str__(self):
         return self.user.username
@@ -43,3 +44,15 @@ class Product(models.Model):
     def get_absolute_url(self):
 
         return reverse('products:product-detail', kwargs={'slug': self.slug})
+    
+
+def sync_user_cart_price(instance, action, **kwargs):
+    
+    if action == 'post_add':
+        prices = [obj.price for obj in instance.products.all()]
+        sumed_prices = sum(list(set(prices)))
+        instance.total_price = sumed_prices # [93.3, 100.1, 232.23]
+        instance.save()
+
+
+m2m_changed.connect(sync_user_cart_price, sender=Cart.products.through)
