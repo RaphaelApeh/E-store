@@ -6,9 +6,6 @@
         <div class="account-page">
             <div class="container">
                 <div class="row">
-                    <!-- <div class="col-2">
-                        <img src="images/image1.png" width="100%">
-                    </div> -->
                     <div class="col-2">
                         <div class="form-container">
                             <div class="form-btn">
@@ -28,7 +25,7 @@
                                     {{ field }}
                                 {% endfor %}
                                 <button type="submit" class="btn">Login</button>
-                                <a href="">Forgot password</a>
+                                <a href="{% url 'accounts:forgot-password' %}">Forgot password</a>
                             </form>
                             {% endif %}
                             {% if "accounts/register/" in request.path %}

@@ -3,7 +3,7 @@ from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import render, redirect
 
-from .forms import RegisterForm, LoginForm
+from .forms import RegisterForm, LoginForm, ForgotPasswordForm
 
 
 class RegisterView(View):
@@ -81,3 +81,31 @@ class LogoutView(View):
         return redirect("accounts:login")
     
 logout_view = LogoutView.as_view()
+
+class ForgotPasswordView(View):
+
+    def dispatch(self, request, *args, **kwargs):
+        if self.request.user.is_authenticated:
+            return redirect("/products/")
+        return super().dispatch(request, *args, **kwargs)
+    def get(self, request, *args, **kwargs):
+        form = ForgotPasswordForm()
+        context = {
+            "show_form": True,
+            "form": form
+        }
+        return render(request, "accounts/forgot-password.html", context)
+    
+    def post(self, request, *args, **kwargs):
+        form = ForgotPasswordForm(self.request.POST)
+        if form.is_valid():
+            message = form.send_mail(self.request.build_absolute_uri())
+            context = {
+                "show_form": False,
+                "message": message
+            }
+            return render(request, "accounts/forgot-password.html", context)
+        else:
+            return redirect("accounts:forgot-password")
+
+forgot_password_view = ForgotPasswordView.as_view()

@@ -149,3 +149,5 @@ LOGIN_REDIRECT_URL = "/products/"
 
 # Stripe
 STRIPE_SECRET_KEY = config("STRIPE_SECRET_KEY", default="", cast=str) 
+
+EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
