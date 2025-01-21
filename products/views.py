@@ -13,7 +13,7 @@ class ProductView(View):
     def get(self, request, *args, **kwargs):
         
         qs = Product.objects.filter(in_stock=True).order_by("-timestamp")
-        paginator = Paginator(qs, 6)
+        paginator = Paginator(qs, 3)
         pages = int(self.request.GET.get("pages", 1))
         products = paginator.get_page(pages)
 

@@ -70,13 +70,13 @@
     
     <div class="page-btn">
         {% if products.has_previous %}
-        <a href="?pages={{ products.previous_page_number }}">
+        <a href="{% querystring pages=products.previous_page_number %}">
         <span>&laquo;</span>
         </a>
         {% endif %}
         <small>Page {{ products.number }} of {{ products.paginator.num_pages }}</small>
         {% if products.has_next %}
-        <a href="?pages={{ products.next_page_number }}">
+        <a href="{% querystring pages=products.next_page_number %}">
         <span>&raquo;</span>
         </a>
         {% endif %}
