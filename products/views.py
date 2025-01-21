@@ -1,6 +1,7 @@
 import random
 
 from django.core.paginator import Paginator
+from django.http import JsonResponse
 from django.views.generic import View, DetailView, TemplateView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import render, get_object_or_404, redirect
@@ -76,3 +77,17 @@ class CartView(LoginRequiredMixin, View):
     
 
 cart_view = CartView.as_view()
+
+
+class AddToCartView(LoginRequiredMixin, View):
+    
+    def post(self, request, *args, **kwargs):
+        product_slug = kwargs["slug"]
+        user = self.request.user
+        product = get_object_or_404(Product, slug=product_slug)
+        if user.cart.products.filter(product=product).exists():
+            return JsonResponse({"added": False})
+        user.cart.products.add(product)
+        return JsonResponse({"added": True})
+    
+add_to_cart_view = AddToCartView.as_view()
