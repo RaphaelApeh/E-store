@@ -21,9 +21,12 @@
                             </div>
                             {% if "accounts/login/" in request.path %}
                             <form id="LoginForm" style="transform: translateX(300px);" method="post">
+                                {{ form.errors|join:' ' }}
+                                {{ messages|join:' ' }}
                                 {% csrf_token %}
-                                <input type="text" placeholder="username">
-                                <input type="password" placeholder="password">
+                                {% for field in form %}
+                                    {{ field }}
+                                {% endfor %}
                                 <button type="submit" class="btn">Login</button>
                                 <a href="">Forgot password</a>
                             </form>

@@ -43,18 +43,27 @@ register_view = RegisterView.as_view()
 class LoginView(View):
 
     def get(self, request, *args, **kwargs):
-
-        return render(request, "accounts/account.html")
+        form = LoginForm()
+        context = {
+            "form": form
+        }
+        return render(request, "accounts/account.html", context)
 
     def post(self, request, *args, **kwargs):
         form = LoginForm(self.request.POST)
         if form.is_valid():
             username = form.cleaned_data["username"]
             password = form.cleaned_data["password"]
-            user = authenticate(request, username, password)
+            user = authenticate(request, username=username, password=password)
             if user is not None:
                 login(request, user)
                 return redirect("products:products-list")
+            else:
+                messages.error(request, "user does not exists or or invalid data.")
+                return redirect("accounts:login")
+        else:
+            messages.error(request, "Invalid data.")
+            return redirect("accounts:login")
 
 login_view = LoginView.as_view()
 
@@ -69,6 +78,6 @@ class LogoutView(View):
         
         logout(request)
         messages.success(request, "user logged out successfully.")
-        return redirect("accounts:register")
+        return redirect("accounts:login")
     
 logout_view = LogoutView.as_view()
