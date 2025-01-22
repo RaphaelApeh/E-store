@@ -22,5 +22,9 @@ function handleAddToCart(event){
                 cartBtn.removeAttribute("style")
             }
         })
+        .catch(error=> {
+            cartBtn.remove()
+            console.log("error", error)
+        })
     })
 }
