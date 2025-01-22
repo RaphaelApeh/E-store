@@ -29,18 +29,14 @@
                             </form>
                             {% endif %}
                             {% if "accounts/register/" in request.path %}
-                            <form id="RegForm" method="post">
-                                {{ register_form.non_field_errors|join:", " }}
+                            <form method="post">
                                 {% csrf_token %}
-                                {% for field in register_form %}
-                                    {% if field.name in password_fields %}
-                                        <small>{{ field.label }}</small>
-                                        {{ field }}
-                                    {% else %}
+                                {% for field in form %}
+                                    <small>{{ field.errors }}</small>
+                                    <small>{{ field.non_field_errors }}</small>
                                     {{ field }}
-                                    {% endif %}
                                 {% endfor %}
-                                <button type="submit" class="btn">Register</button>
+                                <button type="submit" class="btn">Register</button><br>
                             </form>
                             {% endif %}
                         </div>

@@ -1,4 +1,4 @@
-from django.views.generic import View
+from django.views.generic import View, FormView
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import render, redirect
@@ -6,36 +6,26 @@ from django.shortcuts import render, redirect
 from .forms import RegisterForm, LoginForm, ForgotPasswordForm
 
 
-class RegisterView(View):
+class RegisterView(FormView):
+    template_name = "accounts/account.html"
+    form_class = RegisterForm
+    success_url = "/products/"
 
     def dispatch(self, request, *args, **kwargs):
-        if self.request.user.is_authenticated:
-            return redirect("products:products-list")
+        if self.request.user.is_authenticated and not self.request.user.is_superuser:
+            return redirect("/products/")
         return super().dispatch(request, *args, **kwargs)
 
-    def get(self, request, *args, **kwargs):
-        register_form = RegisterForm()
-        password_fields = ['password1', 'password2']
-        context = {
-            "register_form": register_form,
-            "password_fields": password_fields
-        }
-        return render(request, "accounts/account.html", context)
-    
-    def post(self, request, *args, **kwargs):
-        register_form = RegisterForm(self.request.POST)
-        if register_form.is_valid():
-            register_form.save()
-            username = register_form.cleaned_data.get("username")
-            password = register_form.cleaned_data.get("password1")
-            user = authenticate(request, username=username, password=password)
-            if user is not None:
-                login(request, user)
-                messages.success(request, "User saved.")
-                return redirect("products:products-list")
-            messages.error(request, "Error occured")
-            return redirect("accounts:register")
-    
+    def form_valid(self, form):
+        form.save()
+        username = form.cleaned_data["username"]
+        password = form.cleaned_data["password1"]
+        user = authenticate(self.request, username=username, password=password)
+        if user is not None:
+            login(self.request, user)
+        else:
+            redirect("/accounts/register/")
+        return super().form_valid(form)
 
 register_view = RegisterView.as_view()
 

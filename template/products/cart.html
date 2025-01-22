@@ -12,7 +12,7 @@
                 <th>Quantity</th>
                 <th>Prices</th>
             </tr>
-            {% for object in request.user.cart.products.all %}
+            {% for object in qs.products.all %}
             <tr>
                 <td>
                     <div class="cart-info">

@@ -1,7 +1,9 @@
+import time
 import random
 
+from django.db import transaction
 from django.core.paginator import Paginator
-from django.http import JsonResponse
+from django.http import JsonResponse, Http404
 from django.views.generic import View, DetailView, TemplateView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import render, get_object_or_404, redirect
@@ -13,9 +15,12 @@ class ProductView(View):
 
     def get(self, request, *args, **kwargs):
         
-        qs = Product.objects.filter(in_stock=True).order_by("-timestamp")
+        qs = Product.objects.filter(in_stock=True).order_by("-timestamp").only("product_image", "product_name", "price")
         paginator = Paginator(qs, 3)
-        pages = int(self.request.GET.get("pages", 1))
+        try:
+            pages = int(self.request.GET.get("pages", 1))
+        except:
+            pages = 1
         products = paginator.get_page(pages)
 
         context = {
@@ -67,8 +72,12 @@ class CartView(LoginRequiredMixin, View):
 
     def get(self, request, *args, **kwargs):
         random_numbers = list(range(100, 500))
-
+        try:
+            qs = Cart.objects.prefetch_related("products").filter(user=self.request.user).order_by("-products__timestamp").get()
+        except (Cart.DoesNotExist, Cart.MultipleObjectsReturned):
+            raise Http404
         context = {
+            "qs": qs,
             "tax": random.choice(random_numbers),
             "sub_total": random.choice(random_numbers)
         }
@@ -84,12 +93,15 @@ class AddToCartView(LoginRequiredMixin, View):
     def post(self, request, *args, **kwargs):
         product_slug = kwargs["slug"]
         user = self.request.user
-        cart = Cart.objects.get(user=user)
-        product = get_object_or_404(Product, slug=product_slug)
-        if cart.products.contains(product):
-            cart.products.remove(product)
-            return JsonResponse({"added": False})
-        cart.products.add(product)
+        with transaction.atomic():
+            cart = Cart.objects.get(user=user)
+            product = get_object_or_404(Product, slug=product_slug)
+            if cart.products.contains(product):
+                time.sleep(2)
+                cart.products.remove(product)
+                return JsonResponse({"added": False})
+            time.sleep(2)
+            cart.products.add(product)
         return JsonResponse({"added": True})
     
 add_to_cart_view = AddToCartView.as_view()

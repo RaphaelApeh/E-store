@@ -19,7 +19,7 @@ class RegisterForm(UserCreationForm):
         widgets = {
             "username": forms.TextInput(attrs={"placeholder": "Username"}),
             "email": forms.EmailInput(attrs={"placeholder": "joedoe@example.com"}),
-            "password": forms.PasswordInput(attrs={"placeholder": "Password"}),
+            "password1": forms.PasswordInput(attrs={"placeholder": "Password"}),
             "password2": forms.PasswordInput(attrs={"placeholder": "Confirm Password"})
         }
 
@@ -28,6 +28,17 @@ class RegisterForm(UserCreationForm):
             if User.objects.filter(email__iexact=email).exists():
                 self.add_error("email", "A user with is email exists.")
             return email
+
+        def clean(self):
+            clean_data = super().clean()
+            password = clean_data.get("password")
+            password2 = clean_data.get("password2")
+            email = clean_data.get("email")
+            if password != password2:
+                raise forms.ValidationError("password not match")
+            if User.objects.filter(email__iexact=email).exists():
+                raise forms.ValidationError("email already exists.")
+            return clean_data
 
 class ForgotPasswordForm(forms.Form):
     email = forms.EmailField(widget=forms.TextInput(attrs={"placeholder": "johndoe@email.com"}))
