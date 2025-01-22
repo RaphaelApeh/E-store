@@ -32,6 +32,12 @@ register_view = RegisterView.as_view()
 
 class LoginView(View):
 
+
+    def dispatch(self, request, *args, **kwargs):
+        if request.user.is_authenticated and not request.user.is_superuser:
+            return redirect("/products/")
+        return super().dispatch(request, *args, **kwargs)
+
     def get(self, request, *args, **kwargs):
         form = LoginForm()
         context = {
@@ -75,7 +81,7 @@ logout_view = LogoutView.as_view()
 class ForgotPasswordView(View):
 
     def dispatch(self, request, *args, **kwargs):
-        if self.request.user.is_authenticated:
+        if self.request.user.is_authenticated and not self.request.user.is_superuser:
             return redirect("/products/")
         return super().dispatch(request, *args, **kwargs)
     def get(self, request, *args, **kwargs):
