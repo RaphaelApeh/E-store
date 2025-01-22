@@ -1,7 +1,7 @@
 # import stripe
 
 from django.db import models
-from django.db.models.signals import m2m_changed
+from django.db.models.signals import m2m_changed, post_save
 from django.conf import settings
 from django.urls import reverse
 from django.utils.text import slugify
@@ -53,3 +53,9 @@ def sync_user_cart_price(instance, action, **kwargs):
     instance.save()
 
 m2m_changed.connect(sync_user_cart_price, sender=Cart.products.through)
+
+def create_user_cart(instance, created, **kwargs):
+    if created:
+        Cart.objects.create(user=instance)
+
+post_save.connect(create_user_cart, sender=User)
