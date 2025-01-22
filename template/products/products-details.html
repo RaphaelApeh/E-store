@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load static %}
 {% block title %} {{object.product_name}} {% endblock %}
 {% block content %}
 
@@ -32,7 +33,15 @@
                         <option>10<!--XXL--></option>
                     </select>
                     <input type="number" values="1">
-                    <a href="cart.html" class="btn">Add to Cart</a>
+                    {% if request.user.is_authenticated %}
+                    {% if not object in request.user.cart.products.all %}
+                    <button id="cart-btn" class="btn">Add to Cart</button>
+                    {% else %}
+                    <button id="cart-btn" style="background-color: black;" class="btn">Remove from Cart</button>
+                    {% endif %}
+                    {% else %}
+                    <small>You are logged out.</small>
+                    {% endif %}
                     <h3>Product Details <i class="fa fa-indent" ></i></h3>
                     <br>
                     <p>{{ object.product_description }}</p>
@@ -40,7 +49,7 @@
             </div>
         </div>
     
-    
+    <script src="{% static 'cart.js' %}" data-csrf="{{ csrf_token }}"></script>
     <!----------------------------------Title------------------------------------->
     <div class="small-container">
         <div class="row row-2">

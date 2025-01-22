@@ -84,10 +84,12 @@ class AddToCartView(LoginRequiredMixin, View):
     def post(self, request, *args, **kwargs):
         product_slug = kwargs["slug"]
         user = self.request.user
+        cart = Cart.objects.get(user=user)
         product = get_object_or_404(Product, slug=product_slug)
-        if user.cart.products.filter(product=product).exists():
+        if cart.products.contains(product):
+            cart.products.remove(product)
             return JsonResponse({"added": False})
-        user.cart.products.add(product)
+        cart.products.add(product)
         return JsonResponse({"added": True})
     
 add_to_cart_view = AddToCartView.as_view()
