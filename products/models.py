@@ -1,4 +1,4 @@
-# import stripe
+import stripe
 
 from django.db import models
 from django.db.models.signals import m2m_changed, post_save
@@ -8,6 +8,8 @@ from django.utils.text import slugify
 from django.contrib.auth import get_user_model
 
 from taggit.managers import TaggableManager
+
+stripe.api_key = settings.STRIPE_SECRET_KEY
 
 User = get_user_model()
 
@@ -39,6 +41,11 @@ class Product(models.Model):
     def save(self, *args, **kwargs):
         if self.product_name:
             self.slug = slugify(self.product_name)
+            if self.stripe_product_id or self.stripe_price_id is None:
+                stripe_product_id = stripe.Product.create(name=self.product_name, description=self.product_description).id
+                stripe_price_id = stripe.Price.create(product=stripe_product_id, currency="usd", unit_amount=int(self.price) * 100).id
+                self.stripe_product_id = stripe_product_id
+                self.stripe_price_id = stripe_price_id
         super().save(*args, **kwargs)
 
     def get_absolute_url(self):
