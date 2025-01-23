@@ -41,11 +41,12 @@ class Product(models.Model):
     def save(self, *args, **kwargs):
         if self.product_name:
             self.slug = slugify(self.product_name)
-            if self.stripe_product_id or self.stripe_price_id is None:
-                stripe_product_id = stripe.Product.create(name=self.product_name, description=self.product_description).id
-                stripe_price_id = stripe.Price.create(product=stripe_product_id, currency="usd", unit_amount=int(self.price) * 100).id
-                self.stripe_product_id = stripe_product_id
-                self.stripe_price_id = stripe_price_id
+            if self.stripe_product_id is None:
+                if self.stripe_product_id or self.stripe_price_id is None:
+                    stripe_product_id = stripe.Product.create(name=self.product_name, description=self.product_description).id
+                    stripe_price_id = stripe.Price.create(product=stripe_product_id, currency="usd", unit_amount=int(self.price) * 100).id
+                    self.stripe_product_id = stripe_product_id
+                    self.stripe_price_id = stripe_price_id
         super().save(*args, **kwargs)
 
     def get_absolute_url(self):
