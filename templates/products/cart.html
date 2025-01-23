@@ -20,7 +20,7 @@
                         <div>
                             <p>{{ object.product_name }}</p>
                             <small>Price: ${{ object.price }}</small><br>
-                            <a href="">Remove</a>
+                            <a href="{% url 'checkout' object.slug %}">procced to checkout</a>
                         </div>
                     </div>
                 </td>
@@ -34,11 +34,11 @@
                 <table>
                     <tr>
                         <td>Subtotal</td>
-                        <td>${{ sub_total }}</td>
+                        <td id="target">${{ sub_total }}</td>
                     </tr>
                     <tr>
                         <td>Tax</td>
-                        <td>${{ tax }}</td>
+                        <td id="target">${{ tax }}</td>
                     </tr>
                     <tr>
                         <td>Total</td>
@@ -46,5 +46,16 @@
                     </tr>
                 </table>
             </div>
+            <script>
+                const numberTaget = document.querySelectorAll("#target")
+                numberTaget.forEach(el => {
+                    setInterval(()=>{
+                    const num = Math.random() * 100 - 5 + 5
+                    el.textContent = `$${num.toFixed(2)}` 
+                    },
+                    5000
+                    )
+                })
+            </script>
         </div>
 {% endblock %}
