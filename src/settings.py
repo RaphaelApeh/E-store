@@ -46,7 +46,7 @@ INSTALLED_APPS = [
     # Internals
     "products",
     "accounts",
-    #"checkouts",
+    "checkouts",
 
 ]
 
