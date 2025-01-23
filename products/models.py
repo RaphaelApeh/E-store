@@ -1,8 +1,10 @@
 import stripe
 
 from django.db import models
+from django.db.models import Sum
 from django.db.models.signals import m2m_changed, post_save
 from django.conf import settings
+from django.utils.crypto import get_random_string
 from django.urls import reverse
 from django.utils.text import slugify
 from django.contrib.auth import get_user_model
@@ -39,14 +41,16 @@ class Product(models.Model):
         return self.product_name
     
     def save(self, *args, **kwargs):
+        Klass = self.__class__
         if self.product_name:
             self.slug = slugify(self.product_name)
-            if self.stripe_product_id is None:
-                if self.stripe_product_id or self.stripe_price_id is None:
-                    stripe_product_id = stripe.Product.create(name=self.product_name, description=self.product_description).id
-                    stripe_price_id = stripe.Price.create(product=stripe_product_id, currency="usd", unit_amount=int(self.price) * 100).id
-                    self.stripe_product_id = stripe_product_id
-                    self.stripe_price_id = stripe_price_id
+            if Klass.objects.filter(slug__iexact=self.slug).exists():
+                self.slug = slugify(self.product_name) + f"-{get_random_string(5)}"
+            if not all([self.stripe_product_id, self.stripe_price_id]):
+                stripe_product_id = stripe.Product.create(name=self.product_name, description=self.product_description).id
+                stripe_price_id = stripe.Price.create(product=stripe_product_id, currency="usd", unit_amount=int(self.price) * 100).id
+                self.stripe_product_id = stripe_product_id
+                self.stripe_price_id = stripe_price_id
         super().save(*args, **kwargs)
 
     def get_absolute_url(self):
@@ -55,8 +59,8 @@ class Product(models.Model):
     
 
 def sync_user_cart_price(instance, action, **kwargs):
-    prices = [obj.price for obj in instance.products.all().distinct()]
-    sumed_prices = sum(list(prices)) or 0.00
+    
+    sumed_prices = instance.products.distinct().aggregate(Sum("price"))["price__sum"]
     instance.total_price = sumed_prices
     instance.save()
 
