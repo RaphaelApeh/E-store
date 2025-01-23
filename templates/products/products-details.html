@@ -75,7 +75,11 @@
                         <i class="fa fa-star-o" ></i>
                     </div>
                     <p>${{ product.price }}</p>
-                </div> 
+                </div>
+                {% empty %}
+                <div class="col-4">
+                    <a href=""><h4>No Product Found.</h4></a>
+                </div>
                 {% endfor %}
             </div>
     </div>
