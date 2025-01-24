@@ -25,14 +25,14 @@
                         <li><a href="/">Home</a></li>
                          <li><a href="/products/">Products</a></li>
                          {% if request.user.is_authenticated %}
-                         <li><a href="/accounts/logout/">Logout</a></li>
+                         <li><a href="{% static 'accounts/logout' %}">Logout</a></li>
                          {% elif request.user.is_anonymous %}
                          <li><a href="{% url 'accounts:login' %}">Login</a></li>
                          <li><a href="{% url 'accounts:register' %}">Signup</a></li>
                         {% endif %}
                     </ul>
                 </nav>
-                <a href="/cart/"><img src="{% static 'images/cart.png' %}" width="30px" height="30px"></a>
+                <a href="{% url 'products:cart' %}"><img src="{% static 'images/cart.png' %}" width="30px" height="30px"></a>
                 <img src="{% static 'images/menu.png' %}" class="menu-icon" onClick="menutoggle()" >
             </div>
            
