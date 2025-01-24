@@ -72,6 +72,7 @@ class CartView(LoginRequiredMixin, View):
 
     def get(self, request, *args, **kwargs):
         random_numbers = list(range(100, 500))
+        session_id = self.request.GET.get("session_id")
         try:
             qs = Cart.objects.prefetch_related("products").filter(user=self.request.user).order_by("-products__timestamp").get()
         except (Cart.DoesNotExist, Cart.MultipleObjectsReturned):
@@ -79,7 +80,8 @@ class CartView(LoginRequiredMixin, View):
         context = {
             "qs": qs,
             "tax": random.choice(random_numbers),
-            "sub_total": random.choice(random_numbers)
+            "sub_total": random.choice(random_numbers),
+            "stripe_session_id": session_id if session_id is not None else False
         }
 
         return render(request, "products/cart.html", context)

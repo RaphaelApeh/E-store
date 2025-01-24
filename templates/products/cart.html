@@ -6,6 +6,9 @@
 <!------------------------------ cart items details------------------------------>
 
         <div class="small-container cart-page">
+            {% if stripe_session_id %}
+            <center><small style="font-size: large;">Successfully Purchased</small></center>
+            {% endif %}
         <table>
             <tr>
                 <th>Product</th>
