@@ -1,4 +1,5 @@
 import stripe
+from cloudinary.models import CloudinaryField
 
 from django.db import models
 from django.db.models import Sum
@@ -11,9 +12,14 @@ from django.contrib.auth import get_user_model
 
 from taggit.managers import TaggableManager
 
+from .utils import load_cloudinary
+
 stripe.api_key = settings.STRIPE_SECRET_KEY
 
 User = get_user_model()
+
+
+load_cloudinary()
 
 class Cart(models.Model):
 
@@ -28,7 +34,7 @@ class Product(models.Model):
 
     product_name = models.CharField(max_length=50, db_index=True)
     product_description = models.TextField()
-    product_image = models.ImageField()
+    product_image = CloudinaryField("image")
     stripe_product_id = models.CharField(max_length=60, null=True, blank=True)
     stripe_price_id = models.CharField(max_length=60, null=True, blank=True)
     slug = models.SlugField(max_length=52, blank=True, null=True)

@@ -5,6 +5,7 @@ description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
+    "cloudinary>=1.42.1",
     "dj-database-url>=2.3.0",
     "django>=5.1.5",
     "django-taggit>=6.1.0",
