@@ -88,7 +88,7 @@ class ForgotPasswordView(View):
     def get(self, request, *args, **kwargs):
         form = ForgotPasswordForm()
         context = {
-            "show_form": True,
+            "show_form": False,
             "form": form
         }
         return render(request, "accounts/forgot-password.html", context)
@@ -98,7 +98,7 @@ class ForgotPasswordView(View):
         if form.is_valid():
             message = form.send_mail(self.request.build_absolute_uri())
             context = {
-                "show_form": True,
+                "show_form": False,
                 "message": message
             }
             return render(request, "accounts/forgot-password.html", context)

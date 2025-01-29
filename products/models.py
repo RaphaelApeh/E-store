@@ -67,7 +67,7 @@ class Product(models.Model):
 def sync_user_cart_price(instance, action, **kwargs):
     
     sumed_prices = instance.products.distinct().aggregate(Sum("price"))["price__sum"]
-    instance.total_price = sumed_prices
+    instance.total_price = sumed_prices or 0.00
     instance.save()
 
 m2m_changed.connect(sync_user_cart_price, sender=Cart.products.through)

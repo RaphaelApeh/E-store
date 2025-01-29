@@ -18,7 +18,7 @@ class CheckoutView(View):
         product = get_object_or_404(Product, slug=product_slug)
         stripe_price_id = product.stripe_price_id
         
-        success_url = self.request.build_absolute_uri("/cart/?session_id={CHECKOUT_SESSION_ID}")
+        success_url = self.request.build_absolute_uri("/cart/") + "?session_id={CHECKOUT_SESSION_ID}"
         cancel_url = self.request.build_absolute_uri("/products/%s" % product_slug)
         try:
             checkout_session = stripe.checkout.Session.create(
