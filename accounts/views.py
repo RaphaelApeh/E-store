@@ -84,6 +84,7 @@ class ForgotPasswordView(View):
         if self.request.user.is_authenticated and not self.request.user.is_superuser:
             return redirect("/products/")
         return super().dispatch(request, *args, **kwargs)
+    
     def get(self, request, *args, **kwargs):
         form = ForgotPasswordForm()
         context = {
@@ -97,7 +98,7 @@ class ForgotPasswordView(View):
         if form.is_valid():
             message = form.send_mail(self.request.build_absolute_uri())
             context = {
-                "show_form": False,
+                "show_form": True,
                 "message": message
             }
             return render(request, "accounts/forgot-password.html", context)
